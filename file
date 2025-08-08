@@ -1,0 +1,47 @@
+// Customize your message and delay here:
+const spamMessage = "YOUR_MSG";
+const spamDelay = 1000; // 1 second
+
+function sendSpamMessage() {
+  // Find the chat input box by data-tab attribute that is stable in 2025
+  const chatInput = document.querySelector("div[contenteditable='true'][data-tab='10']");
+  if (!chatInput) {
+    console.log("Chat input box not found!");
+    return;
+  }
+
+  chatInput.focus();
+  // Set the message text content (simulate typing)
+  chatInput.textContent = spamMessage;
+
+  // Dispatch an input event so WhatsApp detects the message change
+  const event = new InputEvent("input", {
+    bubbles: true,
+    cancelable: true,
+    data: spamMessage,
+    inputType: "insertText"
+  });
+  chatInput.dispatchEvent(event);
+
+  // Find the send button via aria-label or fallback
+  let sendBtn = document.querySelector("button[aria-label='Send']");
+  if (!sendBtn) {
+    const buttons = document.querySelectorAll("footer button");
+    if (buttons.length > 0) {
+      sendBtn = buttons[buttons.length - 1];
+    }
+  }
+
+  if (sendBtn) {
+    sendBtn.click();
+    console.log("Sent message:", spamMessage);
+  } else {
+    console.log("Send button not found!");
+  }
+}
+
+// Start infinite spam loop every spamDelay milliseconds
+const spamInterval = setInterval(sendSpamMessage, spamDelay);
+
+// To stop the spam, run:
+// clearInterval(spamInterval);
